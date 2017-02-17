@@ -1,13 +1,10 @@
-'use strict';
+const express = require('express')
+const app = express()
 
-var express = require('express');
-var app = express();
+app
+	.use('/', express.static('./public'))
+	.use('/vendor', express.static('./node_modules'))
+	.listen('3000', () => console.log(Date().toLocaleString()))
 
-app.set('PORT', '3000');
-
-app.use('/vendor', express.static('./node_modules'));
-app.use('/', express.static('./public'));
-
-app.listen(app.get('PORT'), function(){
-	console.log('Running on ' + app.get('PORT'));
-});
+app
+	.get('/test', (req, res) => res.send('hello'))
