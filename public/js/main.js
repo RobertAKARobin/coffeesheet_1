@@ -1,5 +1,9 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', function(){
-	console.log('Hello, world.');
+	m.mount(document.getElementById('app'), {
+		view: function(){
+			return m('p', 'This is Mithril!');
+		}
+	});
 });
