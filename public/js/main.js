@@ -42,13 +42,38 @@ var Row = (function(){
 	$instance.cells = [];
 	$instance.construct = function(data){
 		var row = this;
-		row.cells = data;
+		row.cells = [];
+		data.forEach(row.appendCell.bind(row));
+	}
+	$instance.appendCell = function(data){
+		var row = this;
+		var cell = Cell.create(data);
+		row.cells.push(cell);
 	}
 	$instance.view = function(){
 		var row = this;
 		return row.cells.map(function(cell){
-			return m('td', cell);
+			return m('td', cell.data);
 		});
+	}
+
+	return $Class;
+})();
+
+var Cell = (function(){
+	var $Class = {};
+	var $instance = {};
+
+	$Class.create = function(){
+		var cell = Object.create($instance);
+		cell.construct.apply(cell, arguments);
+		return cell;
+	}
+
+	$instance.data = undefined;
+	$instance.construct = function(data){
+		var cell = this;
+		cell.data = (data || 0);
 	}
 
 	return $Class;
