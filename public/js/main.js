@@ -17,8 +17,9 @@ var Table = (function(){
 	$instance.view = function(){
 		var table = this;
 		return m('table', [
-			table.rows.map(function(row){
+			table.rows.map(function(row, index){
 				return m('tr', [
+					m('th', (index + 1)),
 					row.view()
 				]);
 			})
