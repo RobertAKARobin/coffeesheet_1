@@ -6,7 +6,11 @@ var Table = (function(){
 	$instance.rows = [];
 	$instance.load = function(data){
 		var table = this;
-		data.forEach(table.appendRow.bind(table));
+		var i, l = data.length;
+		table.rows = [];
+		for(i = 0; i < l; i += 1){
+			table.appendRow(data[i]);
+		}
 		return table;
 	}
 	$instance.appendRow = function(data){
@@ -42,8 +46,11 @@ var Row = (function(){
 	$instance.cells = [];
 	$instance.construct = function(data){
 		var row = this;
+		var i, l = data.length;
 		row.cells = [];
-		data.forEach(row.appendCell.bind(row));
+		for(i = 0; i < l; i += 1){
+			row.appendCell(data[i]);
+		}
 	}
 	$instance.appendCell = function(data){
 		var row = this;
@@ -82,6 +89,7 @@ var Cell = (function(){
 document.addEventListener('DOMContentLoaded', function(){
 	m.mount(document.getElementById('app'), Table.load([
 		['a','b','c','d','e'],
-		['1','2','3','4','5']
+		['1','2','3','4','5',,],
+		[,,,]
 	]));
 });
