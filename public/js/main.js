@@ -11,7 +11,26 @@ var Table = (function(){
 		for(i = 0; i < l; i += 1){
 			table.appendRow(data[i]);
 		}
+		table.padRows(table.findMaxRowLength());
 		return table;
+	}
+	$instance.findMaxRowLength = function(){
+		var table = this, row;
+		var maxRowLength = 0;
+		var i, l = table.rows.length;
+		for(i = 0; i < l; i += 1){
+			row = table.rows[i];
+			maxRowLength = Math.max(row.cells.length, maxRowLength);
+		}
+		return maxRowLength;
+	}
+	$instance.padRows = function(length){
+		var table = this, row;
+		var i, l = table.rows.length;
+		for(i = 0; i < l; i += 1){
+			row = table.rows[i];
+			row.pad(length);
+		}
 	}
 	$instance.appendRow = function(data){
 		var table = this;
@@ -57,6 +76,14 @@ var Row = (function(){
 		var cell = Cell.create(data);
 		row.cells.push(cell);
 	}
+	$instance.pad = function(length){
+		var row = this;
+		var i = row.cells.length;
+		while(i < length){
+			row.appendCell();
+			i += 1;
+		}
+	}
 	$instance.view = function(){
 		var row = this;
 		return row.cells.map(function(cell){
@@ -80,7 +107,7 @@ var Cell = (function(){
 	$instance.data = undefined;
 	$instance.construct = function(data){
 		var cell = this;
-		cell.data = (data || 0);
+		cell.data = (data || '');
 	}
 
 	return $Class;
