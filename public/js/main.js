@@ -34,10 +34,12 @@ var Table = (function(){
 	}
 	$instance.appendRow = function(data){
 		var table = this;
-		var row = Row.create(data);
+		var row = Row.create(data || []);
 		table.maxRowLength = Math.max(row.cells.length, table.maxRowLength);
+		row.pad(table.maxRowLength);
 		table.rows.push(row);
 	}
+
 	$instance.view = function(){
 		var table = this;
 		return m('table', [
@@ -46,7 +48,13 @@ var Table = (function(){
 					m('th', (index + 1)),
 					row.view()
 				]);
-			})
+			}),
+			m('tr', [
+				m('th', {
+					colspan: (table.maxRowLength + 1),
+					onclick: table.appendRow.bind(table)
+				}, 'Add')
+			])
 		]);
 	}
 
@@ -65,6 +73,7 @@ var Row = (function(){
 
 	$instance.construct = function(data){
 		var row = this;
+		var data = (data || []);
 		var i, l = data.length;
 		row.cells = [];
 		for(i = 0; i < l; i += 1){
