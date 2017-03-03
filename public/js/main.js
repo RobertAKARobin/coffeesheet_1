@@ -1,12 +1,22 @@
 'use strict';
 
 var Table = (function(){
+	var $Class = {};
 	var $instance = {};
 
+	$Class.create = function(){
+		var table = Object.create($instance);
+		table.construct.apply(table, arguments);
+		return table;
+	}
+
+	$instance.construct = function(){
+		var table = this;
+		table.rows = [];
+	}
 	$instance.load = function(data){
 		var table = this;
 		var i, l = data.length;
-		table.rows = [];
 		for(i = 0; i < l; i += 1){
 			table.appendRow(data[i]);
 		}
@@ -48,7 +58,7 @@ var Table = (function(){
 		]);
 	}
 
-	return $instance;
+	return $Class;
 })();
 
 var Row = (function(){
@@ -111,7 +121,8 @@ var Cell = (function(){
 })();
 
 document.addEventListener('DOMContentLoaded', function(){
-	m.mount(document.getElementById('app'), Table.load([
+	var table = Table.create();
+	m.mount(document.getElementById('app'), table.load([
 		['a','b','c','d','e'],
 		['1','2','3','4','5',,],
 		[,,,]
