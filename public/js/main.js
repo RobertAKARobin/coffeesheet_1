@@ -13,6 +13,7 @@ var Table = (function(){
 	$instance.construct = function(){
 		var table = this;
 		table.rows = [];
+		table.maxRowLength = 0;
 	}
 	$instance.load = function(data){
 		var table = this;
@@ -20,18 +21,8 @@ var Table = (function(){
 		for(i = 0; i < l; i += 1){
 			table.appendRow(data[i]);
 		}
-		table.padRows(table.findMaxRowLength());
+		table.padRows(table.maxRowLength);
 		return table;
-	}
-	$instance.findMaxRowLength = function(){
-		var table = this, row;
-		var maxRowLength = 0;
-		var i, l = table.rows.length;
-		for(i = 0; i < l; i += 1){
-			row = table.rows[i];
-			maxRowLength = Math.max(row.cells.length, maxRowLength);
-		}
-		return maxRowLength;
 	}
 	$instance.padRows = function(length){
 		var table = this, row;
@@ -44,6 +35,7 @@ var Table = (function(){
 	$instance.appendRow = function(data){
 		var table = this;
 		var row = Row.create(data);
+		table.maxRowLength = Math.max(row.cells.length, table.maxRowLength);
 		table.rows.push(row);
 	}
 	$instance.view = function(){
