@@ -101,7 +101,11 @@ var Row = (function(){
 	$instance.view = function(){
 		var row = this;
 		return row.cells.map(function(cell){
-			return m('td', cell.data);
+			return m('td', [
+				m('input', {
+					value: cell.data
+				})
+			]);
 		});
 	}
 

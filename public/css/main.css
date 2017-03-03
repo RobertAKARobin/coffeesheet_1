@@ -1,10 +1,23 @@
 *{
 	font-family:Verdana;
 }
-table{
+*:focus{
+	outline:none;
+}
+table, td{
 	border-collapse:collapse;
 }
 td, th{
 	border:1px solid #ccc;
-	padding:3px 5px;
+}
+td{
+	padding:0;
+}
+th{
+	padding:5px 10px;
+}
+td > input{
+	border:0;
+	width:100px;
+	padding:5px 10px;
 }
