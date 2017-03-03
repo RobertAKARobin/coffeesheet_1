@@ -3,7 +3,6 @@
 var Table = (function(){
 	var $instance = {};
 
-	$instance.rows = [];
 	$instance.load = function(data){
 		var table = this;
 		var i, l = data.length;
@@ -62,7 +61,6 @@ var Row = (function(){
 		return row;
 	}
 
-	$instance.cells = [];
 	$instance.construct = function(data){
 		var row = this;
 		var i, l = data.length;
@@ -104,7 +102,6 @@ var Cell = (function(){
 		return cell;
 	}
 
-	$instance.data = undefined;
 	$instance.construct = function(data){
 		var cell = this;
 		cell.data = (data || '');
