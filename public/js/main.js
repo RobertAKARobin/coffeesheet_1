@@ -32,12 +32,21 @@ var Table = (function(){
 			row.pad(length);
 		}
 	}
-	$instance.appendRow = function(data){
+	$instance.createRow = function(data){
 		var table = this;
 		var row = Row.create(data || []);
 		table.maxRowLength = Math.max(row.cells.length, table.maxRowLength);
 		row.pad(table.maxRowLength);
-		table.rows.push(row);
+		return row;
+	}
+	$instance.appendRow = function(data, index){
+		var table = this;
+		var row = table.createRow(data);
+		if(isNaN(index)){
+			table.rows.push(row);
+		}else{
+			table.rows.splice((index + 1), 0, row);
+		}
 	}
 
 	$instance.view = function(){
@@ -45,16 +54,12 @@ var Table = (function(){
 		return m('table', [
 			table.rows.map(function(row, index){
 				return m('tr', [
-					m('th', (index + 1)),
+					m('th', {
+						onclick: table.appendRow.bind(table, [], index)
+					}, (index + 1)),
 					row.view()
 				]);
-			}),
-			m('tr', [
-				m('th', {
-					colspan: (table.maxRowLength + 1),
-					onclick: table.appendRow.bind(table)
-				}, 'Add')
-			])
+			})
 		]);
 	}
 
