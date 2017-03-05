@@ -103,7 +103,8 @@ var Row = (function(){
 		return row.cells.map(function(cell){
 			return m('td', [
 				m('input', {
-					value: cell.data
+					value: cell.data(),
+					oninput: m.withAttr('value', cell.data)
 				})
 			]);
 		});
@@ -124,7 +125,7 @@ var Cell = (function(){
 
 	$instance.construct = function(data){
 		var cell = this;
-		cell.data = (data || '');
+		cell.data = m.stream(data || '')
 	}
 
 	return $Class;
