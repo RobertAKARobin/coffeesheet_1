@@ -104,7 +104,7 @@ var Row = (function(){
 			return m('td', [
 				m('input', {
 					value: cell.data(),
-					oninput: m.withAttr('value', cell.data)
+					oninput: cell.events.update.bind(cell)
 				})
 			]);
 		});
@@ -123,6 +123,12 @@ var Cell = (function(){
 		return cell;
 	}
 
+	$instance.events = {};
+	$instance.events.update = function(event){
+		var cell = this;
+		event.redraw = false;
+		cell.data(event.currentTarget.value);
+	}
 	$instance.construct = function(data){
 		var cell = this;
 		cell.data = m.stream(data || '')
