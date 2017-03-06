@@ -49,6 +49,7 @@ body{
 	color:#aaf;
 	text-decoration:underline;
 }
+.cell.head a:hover,
 .cell.head a:focus,
 .cell.head a:active{
 	color:#00f;
