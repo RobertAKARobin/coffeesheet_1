@@ -47,6 +47,19 @@ var Table = (function(){
 		}
 		table.maxRowLength += 1;
 	}
+	$instance.deleteColumn = function(index){
+		var table = this;
+		var r, row, numRows = table.rows.length;
+		if(table.cols.length <= 1){
+			return false;
+		}
+		for(r = 0; r < numRows; r++){
+			row = table.rows[r];
+			row.cells.splice(index, 1);
+		}
+		table.cols.splice(index, 1);
+		table.maxRowLength = table.cols.length;
+	}
 	$instance.insertRow = function(data, index){
 		var table = this;
 		var row = Row.create(data);
@@ -60,6 +73,17 @@ var Table = (function(){
 		}else{
 			table.rows.splice((index + 1), 0, row);
 		}
+	}
+	$instance.deleteRow = function(index){
+		var table = this;
+		var c, numCols = table.cols.length;
+		if(table.rows.length <= 1){
+			return false;
+		}
+		for(c = 0; c < numCols; c++){
+			table.cols[c].splice(index, 1);
+		}
+		table.rows.splice(index, 1);
 	}
 	$instance.mapColumns = function(){
 		var table = this;
@@ -84,10 +108,18 @@ var Table = (function(){
 			var row = table.insertRow([], index);
 			table.padRows();
 		}
+		events.deleteRow = function(event){
+			var index = parseInt(event.currentTarget.getAttribute('rowIndex'));
+			event.redraw = table.deleteRow(index);
+		}
 		events.insertColumn = function(event){
 			var index = parseInt(event.currentTarget.getAttribute('colIndex'));
 			table.insertColumn([], index);
 			table.mapColumns();
+		}
+		events.deleteColumn = function(event){
+			var index = parseInt(event.currentTarget.getAttribute('colIndex'));
+			event.redraw = table.deleteColumn(index);
 		}
 		return events;
 	}
@@ -100,11 +132,11 @@ var Table = (function(){
 			return m('a', props, text);
 		}
 		views.colHeader = function(col, index){
-			var doWhat = 'insertColumn';
 			return m('div.cell.head', [
 				(index + 1),
-				headerLink({colIndex: index}, doWhat, 'Insert right'),
-				headerLink({colIndex: index - 1}, doWhat, 'Insert left')
+				headerLink({colIndex: index - 1}, 'insertColumn', 'Insert left'),
+				headerLink({colIndex: index}, 'insertColumn', 'Insert right'),
+				headerLink({colIndex: index}, 'deleteColumn', 'Delete column')
 			]);
 		}
 		views.rowHeader = function(row, index){
@@ -112,7 +144,8 @@ var Table = (function(){
 			return m('div.cell.head', [
 				(index + 1),
 				headerLink({rowIndex: index - 1}, doWhat, 'Insert above'),
-				headerLink({rowIndex: index}, doWhat, 'Insert below')
+				headerLink({rowIndex: index}, doWhat, 'Insert below'),
+				headerLink({rowIndex: index}, 'deleteRow', 'Delete row')
 			]);
 		}
 		views.bodyRow = function(row, index){
