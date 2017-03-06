@@ -13,6 +13,7 @@ var Table = (function(){
 	$instance.construct = function(){
 		var table = this;
 		table.rows = [];
+		table.events = defineEvents(table);
 		table.maxRowLength = 0;
 	}
 	$instance.load = function(data){
@@ -49,13 +50,23 @@ var Table = (function(){
 		}
 	}
 
+	var defineEvents = function($instance){
+		var table = $instance;
+		var events = {};
+		events.appendRow = function(event){
+			var index = parseInt(event.currentTarget.getAttribute('rowIndex'));
+			table.appendRow([], index);
+		}
+		return events;
+	}
 	$instance.view = function(){
 		var table = this;
 		return m('table', [
 			table.rows.map(function(row, index){
 				return m('tr', [
 					m('th', {
-						onclick: table.appendRow.bind(table, [], index)
+						rowIndex: index,
+						onclick: table.events.appendRow
 					}, (index + 1)),
 					row.view()
 				]);
@@ -104,7 +115,7 @@ var Row = (function(){
 			return m('td', [
 				m('input', {
 					value: cell.data(),
-					oninput: cell.events.update.bind(cell)
+					oninput: cell.events.update
 				})
 			]);
 		});
@@ -123,15 +134,20 @@ var Cell = (function(){
 		return cell;
 	}
 
-	$instance.events = {};
-	$instance.events.update = function(event){
-		var cell = this;
-		event.redraw = false;
-		cell.data(event.currentTarget.value);
-	}
 	$instance.construct = function(data){
 		var cell = this;
+		cell.events = defineEvents(cell);
 		cell.data = m.stream(data || '')
+	}
+
+	var defineEvents = function($instance){
+		var cell = $instance;
+		var events = {};
+		events.update = function(event){
+			event.redraw = false;
+			cell.data(event.currentTarget.value);
+		}
+		return events;
 	}
 
 	return $Class;
