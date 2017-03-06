@@ -38,6 +38,14 @@ var Table = (function(){
 			table.rowsAreSameLength = true;
 		}
 	}
+	$instance.insertColumn = function(data, index){
+		var table = this;
+		var r, numRows = table.rows.length;
+		for(r = 0; r < numRows; r++){
+			table.rows[r].insertCell(data[r], index);
+		}
+		table.maxRowLength += 1;
+	}
 	$instance.insertRow = function(data, index){
 		var table = this;
 		var row = Row.create(data);
@@ -75,6 +83,11 @@ var Table = (function(){
 			var row = table.insertRow([], index);
 			table.padRows();
 		}
+		events.insertColumn = function(event){
+			var index = parseInt(event.currentTarget.getAttribute('colIndex'));
+			table.insertColumn([], index);
+			table.mapColumns();
+		}
 		return events;
 	}
 	$instance.view = function(){
@@ -83,7 +96,10 @@ var Table = (function(){
 			m('tr', [
 				m('th'),
 				table.cols.map(function(col, index){
-					return m('th', (index + 1));
+					return m('th', {
+						colIndex: index,
+						onclick: table.events.insertColumn
+					}, (index + 1));
 				})
 			]),
 			table.rows.map(function(row, index){
