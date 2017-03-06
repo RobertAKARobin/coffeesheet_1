@@ -6,11 +6,11 @@ var Table = (function(){
 
 	$Class.create = function(){
 		var table = Object.create($instance);
-		table.construct.apply(table, arguments);
+		construct.apply(table, arguments);
 		return table;
 	}
 
-	$instance.construct = function(){
+	var construct = function(){
 		var table = this;
 		table.rows = [];
 		table.events = defineEvents(table);
@@ -20,7 +20,7 @@ var Table = (function(){
 		var table = this;
 		var i, l = data.length;
 		for(i = 0; i < l; i += 1){
-			table.appendRow(data[i]);
+			table.insertRow(data[i]);
 		}
 		table.padRows(table.maxRowLength);
 		return table;
@@ -33,29 +33,24 @@ var Table = (function(){
 			row.pad(length);
 		}
 	}
-	$instance.createRow = function(data){
+	$instance.insertRow = function(data, index){
 		var table = this;
-		var row = Row.create(data || []);
-		table.maxRowLength = Math.max(row.cells.length, table.maxRowLength);
-		row.pad(table.maxRowLength);
-		return row;
-	}
-	$instance.appendRow = function(data, index){
-		var table = this;
-		var row = table.createRow(data);
+		var row = Row.create(data);
 		if(isNaN(index)){
 			table.rows.push(row);
 		}else{
 			table.rows.splice((index + 1), 0, row);
 		}
+		table.maxRowLength = Math.max(row.cells.length, table.maxRowLength);
+		row.pad(table.maxRowLength);
 	}
 
 	var defineEvents = function($instance){
 		var table = $instance;
 		var events = {};
-		events.appendRow = function(event){
+		events.insertRow = function(event){
 			var index = parseInt(event.currentTarget.getAttribute('rowIndex'));
-			table.appendRow([], index);
+			var row = table.insertRow([], index);
 		}
 		return events;
 	}
@@ -66,7 +61,7 @@ var Table = (function(){
 				return m('tr', [
 					m('th', {
 						rowIndex: index,
-						onclick: table.events.appendRow
+						onclick: table.events.insertRow
 					}, (index + 1)),
 					row.view()
 				]);
@@ -83,11 +78,11 @@ var Row = (function(){
 
 	$Class.create = function(){
 		var row = Object.create($instance);
-		row.construct.apply(row, arguments);
+		construct.apply(row, arguments);
 		return row;
 	}
 
-	$instance.construct = function(data){
+	var construct = function(data){
 		var row = this;
 		var data = (data || []);
 		var i, l = data.length;
@@ -130,11 +125,11 @@ var Cell = (function(){
 
 	$Class.create = function(){
 		var cell = Object.create($instance);
-		cell.construct.apply(cell, arguments);
+		construct.apply(cell, arguments);
 		return cell;
 	}
 
-	$instance.construct = function(data){
+	var construct = function(data){
 		var cell = this;
 		cell.events = defineEvents(cell);
 		cell.data = m.stream(data || '')
