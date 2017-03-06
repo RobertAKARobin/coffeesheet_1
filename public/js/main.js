@@ -13,6 +13,7 @@ var Table = (function(){
 	var construct = function(){
 		var table = this;
 		table.rows = [];
+		table.cols = [];
 		table.events = defineEvents(table);
 		table.maxRowLength = 0;
 	}
@@ -23,6 +24,7 @@ var Table = (function(){
 			table.insertRow(data[i]);
 		}
 		table.padRows();
+		table.mapColumns();
 		return table;
 	}
 	$instance.padRows = function(){
@@ -50,6 +52,20 @@ var Table = (function(){
 			table.rows.splice((index + 1), 0, row);
 		}
 	}
+	$instance.mapColumns = function(){
+		var table = this;
+		var r, row, numRows = table.rows.length;
+		var c, col, numCols;
+		table.cols = [];
+		for(r = 0; r < numRows; r++){
+			row = table.rows[r];
+			numCols = row.cells.length;
+			for(c = 0; c < numCols; c++){
+				col = (table.cols[c] || (table.cols[c] = []));
+				col.push(row.cells[c]);
+			}
+		}
+	}
 
 	var defineEvents = function($instance){
 		var table = $instance;
@@ -64,6 +80,12 @@ var Table = (function(){
 	$instance.view = function(){
 		var table = this;
 		return m('table', [
+			m('tr', [
+				m('th'),
+				table.cols.map(function(col, index){
+					return m('th', (index + 1));
+				})
+			]),
 			table.rows.map(function(row, index){
 				return m('tr', [
 					m('th', {
