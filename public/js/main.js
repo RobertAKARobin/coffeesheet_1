@@ -22,27 +22,33 @@ var Table = (function(){
 		for(i = 0; i < l; i += 1){
 			table.insertRow(data[i]);
 		}
-		table.padRows(table.maxRowLength);
+		table.padRows();
 		return table;
 	}
-	$instance.padRows = function(length){
-		var table = this, row;
+	$instance.padRows = function(){
+		var table = this;
+		var length = table.maxRowLength;
 		var i, l = table.rows.length;
-		for(i = 0; i < l; i += 1){
-			row = table.rows[i];
-			row.pad(length);
+		if(!table.rowsAreSameLength){
+			for(i = 0; i < l; i += 1){
+				table.rows[i].pad(length);
+			}
+			table.rowsAreSameLength = true;
 		}
 	}
 	$instance.insertRow = function(data, index){
 		var table = this;
 		var row = Row.create(data);
+		var rowLength = row.cells.length;
+		if(rowLength != table.maxRowLength){
+			table.rowsAreSameLength = false;
+		}
+		table.maxRowLength = Math.max(rowLength, table.maxRowLength);
 		if(isNaN(index)){
 			table.rows.push(row);
 		}else{
 			table.rows.splice((index + 1), 0, row);
 		}
-		table.maxRowLength = Math.max(row.cells.length, table.maxRowLength);
-		row.pad(table.maxRowLength);
 	}
 
 	var defineEvents = function($instance){
@@ -51,6 +57,7 @@ var Table = (function(){
 		events.insertRow = function(event){
 			var index = parseInt(event.currentTarget.getAttribute('rowIndex'));
 			var row = table.insertRow([], index);
+			table.padRows();
 		}
 		return events;
 	}
