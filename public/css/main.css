@@ -1,23 +1,52 @@
-*{
-	font-family:Verdana;
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: inherit;
+	font-weight: inherit;
+	font-family: inherit;
+	font-style: inherit;
+	text-decoration: inherit;
+	line-height: inherit;
+	color: inherit;
 }
 *:focus{
 	outline:none;
 }
-table, td{
+html{
+	font-size:14px;
+	line-height:20px;
+	font-family:Verdana;
+}
+html, body{
+	position:relative;
+}
+body{
+	padding:10px;
+}
+.table{
+	display:table;
 	border-collapse:collapse;
 }
-td, th{
-	border:1px solid #ccc;
+.row{
+	display:table-row;
 }
-td{
-	padding:0;
+.cell{
+	display:table-cell;
+	border-color:#ccc;
+	border-style:solid;
+	border-width:1px;
 }
-th{
-	padding:5px 10px;
+.cell > input,
+.cell.head{
+	padding:3px 5px;
 }
-td > input{
-	border:0;
+.cell.head{
+	background-color:#eee;
+}
+.cell > input{
 	width:100px;
-	padding:5px 10px;
+}
+.cell > input:focus{
+	background-color:#ffb;
 }

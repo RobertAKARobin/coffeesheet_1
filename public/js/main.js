@@ -92,19 +92,19 @@ var Table = (function(){
 	}
 	$instance.view = function(){
 		var table = this;
-		return m('table', [
-			m('tr', [
-				m('th'),
+		return m('div.table', [
+			m('div.row', [
+				m('div.cell.head'),
 				table.cols.map(function(col, index){
-					return m('th', {
+					return m('div.cell.head', {
 						colIndex: index,
 						onclick: table.events.insertColumn
 					}, (index + 1));
 				})
 			]),
 			table.rows.map(function(row, index){
-				return m('tr', [
-					m('th', {
+				return m('div.row', [
+					m('div.cell.head', {
 						rowIndex: index,
 						onclick: table.events.insertRow
 					}, (index + 1)),
@@ -156,7 +156,7 @@ var Row = (function(){
 	$instance.view = function(){
 		var row = this;
 		return row.cells.map(function(cell){
-			return m('td', [
+			return m('div.cell', [
 				m('input', {
 					value: cell.data(),
 					oninput: cell.events.update
