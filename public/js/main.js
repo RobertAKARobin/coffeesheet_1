@@ -15,6 +15,7 @@ var Table = (function(){
 		table.rows = [];
 		table.cols = [];
 		table.events = defineEvents(table);
+		table.views = defineViews(table);
 		table.maxRowLength = 0;
 	}
 	$instance.load = function(data){
@@ -90,45 +91,46 @@ var Table = (function(){
 		}
 		return events;
 	}
+	var defineViews = function($instance){
+		var table = $instance;
+		var views = {};
+		var headerLink = function(props, doWhat, text){
+			props.href = '#';
+			props.onclick = table.events[doWhat];
+			return m('a', props, text);
+		}
+		views.colHeader = function(col, index){
+			var doWhat = 'insertColumn';
+			return m('div.cell.head', [
+				(index + 1),
+				headerLink({colIndex: index}, doWhat, 'Insert right'),
+				headerLink({colIndex: index - 1}, doWhat, 'Insert left')
+			]);
+		}
+		views.rowHeader = function(row, index){
+			var doWhat = 'insertRow';
+			return m('div.cell.head', [
+				(index + 1),
+				headerLink({rowIndex: index - 1}, doWhat, 'Insert above'),
+				headerLink({rowIndex: index}, doWhat, 'Insert below')
+			]);
+		}
+		views.bodyRow = function(row, index){
+			return m('div.row', [
+				table.views.rowHeader(row, index),
+				row.view()
+			]);
+		}
+		return views;
+	}
 	$instance.view = function(){
 		var table = this;
 		return m('div.table', [
 			m('div.row', [
 				m('div.cell.head'),
-				table.cols.map(function(col, index){
-					return m('div.cell.head', [
-						(index + 1),
-						m('a', {
-							href: '#',
-							colIndex: index,
-							onclick: table.events.insertColumn
-						}, 'Insert right'),
-						m('a', {
-							href: '#',
-							colIndex: index - 1,
-							onclick: table.events.insertColumn
-						}, 'Insert left')
-					]);
-				})
+				table.cols.map(table.views.colHeader)
 			]),
-			table.rows.map(function(row, index){
-				return m('div.row', [
-					m('div.cell.head', [
-						(index + 1),
-						m('a', {
-							href: '#',
-							rowIndex: index - 1,
-							onclick: table.events.insertRow
-						}, 'Insert above'),
-						m('a', {
-							href: '#',
-							rowIndex: index,
-							onclick: table.events.insertRow
-						}, 'Insert below')
-					]),
-					row.view()
-				]);
-			})
+			table.rows.map(table.views.bodyRow)
 		]);
 	}
 
