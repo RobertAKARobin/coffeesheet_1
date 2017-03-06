@@ -117,19 +117,23 @@ var Row = (function(){
 		var i, l = data.length;
 		row.cells = [];
 		for(i = 0; i < l; i += 1){
-			row.appendCell(data[i]);
+			row.insertCell(data[i]);
 		}
 	}
-	$instance.appendCell = function(data){
+	$instance.insertCell = function(data, index){
 		var row = this;
-		var cell = Cell.create(data);
-		row.cells.push(cell);
+		var cell = Cell.create(data, row);
+		if(isNaN(index)){
+			row.cells.push(cell);
+		}else{
+			row.cells.splice((index + 1), 0, cell);
+		}
 	}
 	$instance.pad = function(length){
 		var row = this;
 		var i = row.cells.length;
 		while(i < length){
-			row.appendCell();
+			row.insertCell(null, i);
 			i += 1;
 		}
 	}
