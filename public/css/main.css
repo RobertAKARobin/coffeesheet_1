@@ -44,6 +44,15 @@ body{
 .cell.head{
 	background-color:#eee;
 }
+.cell.head a{
+	display:block;
+	color:#aaf;
+	text-decoration:underline;
+}
+.cell.head a:focus,
+.cell.head a:active{
+	color:#00f;
+}
 .cell > input{
 	width:100px;
 }

@@ -96,18 +96,36 @@ var Table = (function(){
 			m('div.row', [
 				m('div.cell.head'),
 				table.cols.map(function(col, index){
-					return m('div.cell.head', {
-						colIndex: index,
-						onclick: table.events.insertColumn
-					}, (index + 1));
+					return m('div.cell.head', [
+						(index + 1),
+						m('a', {
+							href: '#',
+							colIndex: index,
+							onclick: table.events.insertColumn
+						}, 'Insert right'),
+						m('a', {
+							href: '#',
+							colIndex: index - 1,
+							onclick: table.events.insertColumn
+						}, 'Insert left')
+					]);
 				})
 			]),
 			table.rows.map(function(row, index){
 				return m('div.row', [
-					m('div.cell.head', {
-						rowIndex: index,
-						onclick: table.events.insertRow
-					}, (index + 1)),
+					m('div.cell.head', [
+						(index + 1),
+						m('a', {
+							href: '#',
+							rowIndex: index - 1,
+							onclick: table.events.insertRow
+						}, 'Insert above'),
+						m('a', {
+							href: '#',
+							rowIndex: index,
+							onclick: table.events.insertRow
+						}, 'Insert below')
+					]),
 					row.view()
 				]);
 			})
