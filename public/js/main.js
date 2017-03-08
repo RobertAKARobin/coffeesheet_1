@@ -121,6 +121,15 @@ var Table = (function(){
 			var index = parseInt(event.currentTarget.getAttribute('colIndex'));
 			event.redraw = table.deleteColumn(index);
 		}
+		events.updateColumn = function(event){
+			var code = event.currentTarget.value;
+			var colIndex = event.currentTarget.getAttribute('colIndex');
+			var col = table.cols[colIndex];
+			var r, numCells = col.length;
+			for(r = 0; r < numCells; r++){
+				col[r].data(code);
+			}
+		}
 		return events;
 	}
 	var defineViews = function($instance){
@@ -136,7 +145,12 @@ var Table = (function(){
 				(index + 1),
 				headerLink({colIndex: index - 1}, 'insertColumn', 'Insert left'),
 				headerLink({colIndex: index}, 'insertColumn', 'Insert right'),
-				headerLink({colIndex: index}, 'deleteColumn', 'Delete column')
+				headerLink({colIndex: index}, 'deleteColumn', 'Delete column'),
+				m('textarea', {
+					colIndex: index,
+					spellcheck: false,
+					onchange: table.events.updateColumn
+				})
 			]);
 		}
 		views.rowHeader = function(row, index){
